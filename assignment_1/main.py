@@ -4,6 +4,7 @@ import sympy
 from things import Thing
 from create_stations import create_stations
 from constants import GM, A, GAMMA_EQUATOR, K, SECOND_EXCENTRICITY
+from constants import J2, J4, J6, J8
 
 
 def find_thing(tag, things, m=None, n=None):
@@ -36,7 +37,7 @@ def get_gama(phi):
     return GAMMA_EQUATOR * (neumerator / denomenator)
 
 def get_p(n, m, t):
-    return round(sympy.assoc_legendre(n, m, t), 5)
+    return round(sympy.assoc_legendre(n, m, t), 10)
 
 def get_r(station):
     x_term = station.cartesian_coordinate.x ** 2
@@ -49,19 +50,37 @@ def get_n(r, theta, lambda_):
     sin = math.sin
     theta_radians = math.radians(theta)
     lambda_radians = math.radians(lambda_)
-    N = GM / (get_gama(theta_radians) * r)
-    for n in range(2, 50):
-        N += (A / r)**n
+
+    initial = GM / (get_gama(theta_radians) * r)
+    
+    outter_loop = 0
+    for n in range(2, 20):
+        inner_loop = 0
         for m in range(0, n):
             current_c_thing = find_thing('C', list_of_things, n=n, m=m)
+            if not current_c_thing:
+                print('No current_c_thing for {n}, {m}'.format(n=n, m=m))
             current_s_thing = find_thing('S', list_of_things, n=n, m=m)
-            if not current_c_thing or not current_s_thing:
-                print('No S or C for {n}, {m}'.format(n=n, m=m))
-                continue
+            if not current_s_thing:
+                print('No current_s_thing for {n}, {m}'.format(n=n, m=m))
+                s = 0
             else:
-                cns = current_c_thing.value * cos(m * lambda_radians) + current_s_thing.value * sin(m * lambda_radians)
-                N += cns * get_p(n, m, cos(theta_radians))
-    return N
+                s = current_s_thing.value
+
+            if n == 2 and m == 0:
+                c = current_c_thing.value + J2
+            elif n == 4 and m == 0:
+                c = current_c_thing.value + J4
+            elif n == 6 and m == 0:
+                c = current_c_thing.value + J6
+            elif n == 8 and m == 0:
+                c = current_c_thing.value + J8
+            else:
+                c = current_c_thing.value
+            cns = c * cos(m * lambda_radians) + s * sin(m * lambda_radians)
+            inner_loop += cns * get_p(n, m, cos(theta_radians))
+        outter_loop += ((A / r)**n) * inner_loop
+    return initial * outter_loop
 
 stations = create_stations()
 hermanus = stations[0]
