@@ -13,8 +13,8 @@ def create_stations():
 			z=-3585434.051,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=-34.42463,
-			longitude=19.22306,
+			latitude=-(34 + (25/60.0) + (28.6671/3600.0)),
+			longitude=(19 + (13/60.0) + (23.0264/3600.0)),
 		),
 		other_coordinate=OtherCoordinate(
 			y=-20504.530,

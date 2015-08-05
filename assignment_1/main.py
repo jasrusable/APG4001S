@@ -85,7 +85,7 @@ def get_n(r, theta, lambda_):
     initial = GM / (get_gama(theta_radians) * r)
 
     outter_loop = 0
-    for n in range(2, 20):
+    for n in range(2, 40):
         inner_loop = 0
         for m in range(0, n):
             current_c_thing = find_thing('C', list_of_things, n=n, m=m)
@@ -94,25 +94,24 @@ def get_n(r, theta, lambda_):
             current_s_thing = find_thing('S', list_of_things, n=n, m=m)
             if not current_s_thing:
                 print('No current_s_thing for {n}, {m}'.format(n=n, m=m))
+                continue
                 s = 0
             else:
                 s = current_s_thing.value
-
             if n == 2 and m == 0:
-                c = current_c_thing.value + J2
+                c = current_c_thing.value - J2
             elif n == 4 and m == 0:
-                c = current_c_thing.value + J4
+                c = current_c_thing.value - J4
             elif n == 6 and m == 0:
-                c = current_c_thing.value + J6
+                c = current_c_thing.value - J6
             elif n == 8 and m == 0:
-                c = current_c_thing.value + J8
+                c = current_c_thing.value - J8
             else:
                 c = current_c_thing.value
-
-            t = cos(theta_radians)
+            t = cos(math.pi / 2.0 - theta_radians)
             normalized_p = get_shitty_normilized_p(n=n, m=m, t=t)
             inner_loop += (c * cos(m * lambda_radians) + s * sin(m * lambda_radians)) * normalized_p
-        outter_loop += ((A / r)**n) * inner_loop
+        outter_loop += ((A / r) ** n) * inner_loop
     return initial * outter_loop
 
 stations = create_stations()
@@ -122,6 +121,9 @@ list_of_things = read_things_from_file('grvfld.ggm02s')
 har_lat = hermanus.geographical_coordinate.latitude
 har_long = hermanus.geographical_coordinate.longitude
 har_r = get_r(hermanus)
+
+#print(get_gama(math.radians(har_lat)))
+#print(har_r)
 
 print(get_n(
         har_r, 
