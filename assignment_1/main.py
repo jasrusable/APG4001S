@@ -55,7 +55,8 @@ def get_shitty_p(n, m, t):
         Sum += this_loop
     return (2 ** (-n) * (1 - t ** 2) ** (m/2.0)) * Sum
 
-def get_shitty_normilized_p(n, m, t, p):
+def get_shitty_normilized_p(n, m, t):
+    p = get_shitty_p(n=n, m=m, t=t)
     if m == 0:
         j = 1
     if m != 0:
@@ -107,10 +108,9 @@ def get_n(r, theta, lambda_):
                 c = current_c_thing.value + J8
             else:
                 c = current_c_thing.value
-                
+
             t = cos(theta_radians)
-            p = get_shitty_p(n=n, m=m, t=t)
-            normalized_p = get_shitty_normilized_p(n=n, m=m, t=t, p=p)
+            normalized_p = get_shitty_normilized_p(n=n, m=m, t=t)
             inner_loop += (c * cos(m * lambda_radians) + s * sin(m * lambda_radians)) * normalized_p
         outter_loop += ((A / r)**n) * inner_loop
     return initial * outter_loop
