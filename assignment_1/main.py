@@ -1,5 +1,6 @@
 import math
 import sympy
+import numpy as np
 
 from things import Thing
 from create_stations import create_stations
@@ -36,6 +37,35 @@ def get_gama(phi):
     denomenator = math.sqrt(1 - SECOND_EXCENTRICITY * (math.sin(phi)**2))
     return GAMMA_EQUATOR * (neumerator / denomenator)
 
+def get_shitty_p(n, m, t):
+    r = (n - m) / 2
+    modr = (n-m)%2
+    if modr != 0:
+        r = (n - m - 1)/2
+    Sum = 0.0
+    for k in range (0, int(r)+1):
+        a = (-1)**k
+        b = (n - m - 2*k)
+        c = math.factorial(2*n - 2*k)
+        d = math.factorial(k)
+        f = math.factorial(n - k)
+        g = math.factorial(n - m - 2*k) 
+        h = t ** (n - m -2*k)
+        this_loop = a* (c/(d*f*g))*h
+        Sum += this_loop
+    return (2 ** (-n) * (1 - t ** 2) ** (m/2.0)) * Sum
+
+def get_shitty_normilized_p(n, m, t, p):
+    if m == 0:
+        j = 1
+    if m != 0:
+        j = 2
+    pn1 = j * (2.0*n+1.0)
+    pn2 = float(math.factorial(n-m))
+    pn3 = float(math.factorial(n+m))
+    pn4 = pn2/pn3
+    return (np.sqrt(pn1 * pn4)) * p
+
 def get_p(n, m, t):
     return sympy.assoc_legendre(n, m, t)
 
@@ -51,8 +81,8 @@ def get_n(r, theta, lambda_):
     theta_radians = math.radians(theta)
     lambda_radians = math.radians(lambda_)
 
-    initial = GM / (get_gama(math.pi - theta_radians) * r)
-    
+    initial = GM / (get_gama(theta_radians) * r)
+
     outter_loop = 0
     for n in range(2, 20):
         inner_loop = 0
@@ -77,8 +107,11 @@ def get_n(r, theta, lambda_):
                 c = current_c_thing.value + J8
             else:
                 c = current_c_thing.value
-
-            inner_loop += (c * cos(m * lambda_radians) + s * sin(m * lambda_radians)) * get_p(n, m, cos(theta_radians))
+                
+            t = cos(theta_radians)
+            p = get_shitty_p(n=n, m=m, t=t)
+            normalized_p = get_shitty_normilized_p(n=n, m=m, t=t, p=p)
+            inner_loop += (c * cos(m * lambda_radians) + s * sin(m * lambda_radians)) * normalized_p
         outter_loop += ((A / r)**n) * inner_loop
     return initial * outter_loop
 
