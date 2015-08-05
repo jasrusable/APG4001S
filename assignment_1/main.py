@@ -37,7 +37,7 @@ def get_gama(phi):
     return GAMMA_EQUATOR * (neumerator / denomenator)
 
 def get_p(n, m, t):
-    return round(sympy.assoc_legendre(n, m, t), 10)
+    return sympy.assoc_legendre(n, m, t)
 
 def get_r(station):
     x_term = station.cartesian_coordinate.x ** 2
@@ -51,7 +51,7 @@ def get_n(r, theta, lambda_):
     theta_radians = math.radians(theta)
     lambda_radians = math.radians(lambda_)
 
-    initial = GM / (get_gama(theta_radians) * r)
+    initial = GM / (get_gama(math.pi - theta_radians) * r)
     
     outter_loop = 0
     for n in range(2, 20):
@@ -77,8 +77,8 @@ def get_n(r, theta, lambda_):
                 c = current_c_thing.value + J8
             else:
                 c = current_c_thing.value
-            cns = c * cos(m * lambda_radians) + s * sin(m * lambda_radians)
-            inner_loop += cns * get_p(n, m, cos(theta_radians))
+
+            inner_loop += (c * cos(m * lambda_radians) + s * sin(m * lambda_radians)) * get_p(n, m, cos(theta_radians))
         outter_loop += ((A / r)**n) * inner_loop
     return initial * outter_loop
 
@@ -94,5 +94,5 @@ print(get_n(
         har_r, 
         har_lat, 
         har_long,
-        )
     )
+)

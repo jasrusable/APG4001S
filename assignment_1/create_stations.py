@@ -13,7 +13,7 @@ def create_stations():
 			z=-3585434.051,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=34.42463,
+			latitude=-34.42463,
 			longitude=19.22306,
 		),
 		other_coordinate=OtherCoordinate(
@@ -31,7 +31,7 @@ def create_stations():
 			z=-2752950.762,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=25.73203,
+			latitude=-25.73203,
 			longitude=28.28264,
 		),
 		other_coordinate=OtherCoordinate(
@@ -49,7 +49,7 @@ def create_stations():
 			z=-3054077.535,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=28.79554,
+			latitude=-28.79554,
 			longitude=32.07839,
 		),
 		other_coordinate=OtherCoordinate(
@@ -67,7 +67,7 @@ def create_stations():
 			z=-2485109.939,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=23.07991,
+			latitude=-23.07991,
 			longitude=30.38401,
 		),
 		other_coordinate=OtherCoordinate(
@@ -85,7 +85,7 @@ def create_stations():
 			z=-3005435.714,
 		),
 		geographical_coordinate=GeographicalCoordinate(
-			latitude=28.29312,
+			latitude=-28.29312,
 			longitude=31.42093,
 		),
 		other_coordinate=OtherCoordinate(
