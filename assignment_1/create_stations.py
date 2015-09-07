@@ -97,5 +97,6 @@ def create_stations():
 	stations.append(hermanus)
 	stations.append(pretoria)
 	stations.append(richards_bay)
+	stations.append(thohoyandou)
 	stations.append(ulundi)
 	return stations

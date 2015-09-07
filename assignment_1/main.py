@@ -85,7 +85,7 @@ def get_n(r, theta, lambda_):
     initial = GM / (get_gama(theta_radians) * r)
 
     outter_loop = 0
-    for n in range(2, 40):
+    for n in range(2, 10):
         inner_loop = 0
         for m in range(0, n):
             current_c_thing = find_thing('C', list_of_things, n=n, m=m)
@@ -93,7 +93,7 @@ def get_n(r, theta, lambda_):
                 print('No current_c_thing for {n}, {m}'.format(n=n, m=m))
             current_s_thing = find_thing('S', list_of_things, n=n, m=m)
             if not current_s_thing:
-                print('No current_s_thing for {n}, {m}'.format(n=n, m=m))
+                #print('No current_s_thing for {n}, {m}'.format(n=n, m=m))
                 continue
                 s = 0
             else:
@@ -115,19 +115,13 @@ def get_n(r, theta, lambda_):
     return initial * outter_loop
 
 stations = create_stations()
-hermanus = stations[0]
 list_of_things = read_things_from_file('grvfld.ggm02s')
 
-har_lat = hermanus.geographical_coordinate.latitude
-har_long = hermanus.geographical_coordinate.longitude
-har_r = get_r(hermanus)
-
-#print(get_gama(math.radians(har_lat)))
-#print(har_r)
-
-print(get_n(
-        har_r, 
-        har_lat, 
-        har_long,
+for station in stations:
+    print("Station: {0}".format(station.name))
+    print(station.ellipsoidal_height - get_n(
+            get_r(station), 
+            station.geographical_coordinate.latitude, 
+            station.geographical_coordinate.longitude,
+        )
     )
-)
