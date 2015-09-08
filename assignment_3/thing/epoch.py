@@ -8,3 +8,5 @@ class Epoch(object):
         self.hour = hour
         self.minute = minute
         self.second = second
+        self.satellites = []
+        self.observations = []

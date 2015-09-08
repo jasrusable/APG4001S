@@ -1,6 +1,7 @@
 from .utils import parse_float
 from .satellite import Satellite
 from .epoch import Epoch
+from .observation import Observation
 
 
 class RinexParser(object):
@@ -75,14 +76,60 @@ class RinexParser(object):
 
         ttom = parse_float(lines[7][3:22])
 
-        sat = self.get_satellite(prn)
-        if not sat:
-            sat = Satellite(prn)
-            self.satellites.append(sat)
-        ep = self.get_epoch(year, month, day, hour, minute, second)
-        if not ep:
-            ep = Epoch(year, month, day, hour, minute, second)
-            self.epochs.append(ep)
+        satellite = self.get_satellite(prn)
+        if not satellite:
+            satellite = Satellite(prn)
+            self.satellites.append(satellite)
+        epoch = self.get_epoch(year, month, day, hour, minute, second)
+        if not epoch:
+            epoch = Epoch(year, month, day, hour, minute, second)
+            self.epochs.append(epoch)
+
+        observation = Observation(
+                    epoch,
+                    satellite,
+                    sv_clock_bias,
+                    sv_clock_drift,
+                    sv_clock_drift_rate,
+
+                    iode,
+                    crs,
+                    delta_n,
+                    m0,
+
+                    cuc,
+                    e,
+                    cus,
+                    sqrt_a,
+
+                    ttoe,
+                    cic,
+                    big_omega,
+                    cis,
+
+                    i0,
+                    crc,
+                    omega,
+                    omega_dot,
+
+                    idot,
+                    codes_on_l2,
+                    gps_week,
+                    l2_p_data_flag,
+
+                    sv_accuracy,
+                    sv_health,
+                    tgd,
+                    iodc,
+
+                    ttom,
+                )
+
+        self.observations.append(observation)
+        satellite.epochs.append(epoch)
+        satellite.observations.append(observation)
+        epoch.satellites.append(satellite)
+        epoch.observations.append(observation)
 
     def parse(self):
         temp_header = []
