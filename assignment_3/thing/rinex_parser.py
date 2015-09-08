@@ -42,6 +42,11 @@ class RinexParser(object):
         sv_clock_bias = parse_float(lines[0][22:41])
         sv_clock_drift = parse_float(lines[0][41:60])
         sv_clock_drift_rate = parse_float(lines[0][60:79])
+        iode = parse_float(lines[1][4:22])
+        crs = parse_float(lines[1][22:41])
+        delta_n = parse_float(lines[1][41:60])
+        m0 = parse_float(lines[1][60:79])
+        print(m0)
         sat = self.get_satellite(prn)
         if not sat:
             sat = Satellite(prn)
