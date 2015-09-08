@@ -42,11 +42,39 @@ class RinexParser(object):
         sv_clock_bias = parse_float(lines[0][22:41])
         sv_clock_drift = parse_float(lines[0][41:60])
         sv_clock_drift_rate = parse_float(lines[0][60:79])
-        iode = parse_float(lines[1][4:22])
+
+        iode = parse_float(lines[1][3:22])
         crs = parse_float(lines[1][22:41])
         delta_n = parse_float(lines[1][41:60])
         m0 = parse_float(lines[1][60:79])
-        print(m0)
+
+        cuc = parse_float(lines[2][3:22])
+        e = parse_float(lines[2][22:41])
+        cus = parse_float(lines[2][41:60])
+        sqrt_a = parse_float(lines[2][60:79])
+
+        ttoe = parse_float(lines[3][3:22])
+        cic = parse_float(lines[3][22:41])
+        big_omega = parse_float(lines[3][41:60])
+        cis = parse_float(lines[3][60:79])
+
+        i0 = parse_float(lines[4][3:22])
+        crc = parse_float(lines[4][22:41])
+        omega = parse_float(lines[4][41:60])
+        omega_dot = parse_float(lines[4][60:79])
+
+        idot = parse_float(lines[5][3:22])
+        codes_on_l2 = parse_float(lines[5][22:41])
+        gps_week = parse_float(lines[5][41:60])
+        l2_p_data_flag = parse_float(lines[5][60:79])
+
+        sv_accuracy = parse_float(lines[6][3:22])
+        sv_health = parse_float(lines[6][22:41])
+        tgd = parse_float(lines[6][41:60])
+        iodc = parse_float(lines[6][60:79])
+
+        ttom = parse_float(lines[7][3:22])
+
         sat = self.get_satellite(prn)
         if not sat:
             sat = Satellite(prn)
@@ -67,10 +95,10 @@ class RinexParser(object):
                     if 'END OF HEADER' in line:
                         self.header = temp_header
                 else:
-                    if counter < 7:
-                        temp_lines.append(line)
-                        counter += 1
-                    else:
+                    temp_lines.append(line)
+                    if counter == 7:
                         self.process_observation_lines(temp_lines)
                         temp_lines = []
                         counter = 0
+                    else:
+                        counter += 1
